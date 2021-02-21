@@ -1,0 +1,13 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block body %}
+        {% if newyear %}
+            {{ entry }}
+        {% else %}
+            <h1>Requested page was not found</h1>
+        {% endif %}
+{% endblock %}
