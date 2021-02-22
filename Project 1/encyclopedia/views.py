@@ -21,3 +21,26 @@ def getEntryPage(request, title):
 def getRandomPage(request):
     title = choice(util.list_entries())
     return HttpResponseRedirect(f"page/{title}")
+
+
+def getSearchResult(query):
+    results = []
+    list = util.list_entries()
+    for s in list:
+        if query in s.lower():
+            results.append(s)
+    return results
+
+
+def getSearchPage(request):
+    if request.method == 'GET':
+        query = request.GET.get('q')
+    query = query.lower()
+    results = getSearchResult(query)
+    if len(results) == 1 and query == results[0].lower():
+        return HttpResponseRedirect(f"/page/{results[0]}")
+    else:
+        return render(request, "encyclopedia/searchPage.html", {
+            "query": query,
+            "results": results
+        })

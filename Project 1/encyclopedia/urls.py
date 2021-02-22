@@ -5,5 +5,6 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("page/<str:title>", views.getEntryPage, name="getEntryPage"),
-    path("random", views.getRandomPage, name="getRandomPage")
+    path("random/", views.getRandomPage, name="getRandomPage"),
+    path("search/", views.getSearchPage, name="getSearchPage")
 ]
