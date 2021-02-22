@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 
 from . import util
 from random import choice
+from markdown2 import markdown
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -13,7 +14,7 @@ def index(request):
 def getEntryPage(request, title):
     return render(request, "encyclopedia/entryPage.html", {
         "title": title,
-        "entry": util.get_entry(title)
+        "entry": markdown(util.get_entry(title))
     })
 
 

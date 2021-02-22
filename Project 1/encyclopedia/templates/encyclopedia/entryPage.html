@@ -6,7 +6,7 @@
 
 {% block body %}
         {% if entry %}
-            {{ entry }}
+            {{ entry|safe }}
         {% else %}
             <h1>Requested page was not found</h1>
         {% endif %}
