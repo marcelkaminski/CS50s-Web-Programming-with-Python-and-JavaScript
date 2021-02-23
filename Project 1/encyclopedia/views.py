@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django import forms
+from django.contrib import messages
 
 from . import util
 from random import choice
@@ -44,3 +46,28 @@ def getSearchPage(request):
             "query": query,
             "results": results
         })
+
+
+class CreateNewPageForm(forms.Form):
+    newTitle = forms.CharField(label="Title")
+    newContent = forms.CharField(label="Content")
+
+
+def createNewPage(request):
+    if request.method == 'GET':
+        return render(request, "encyclopedia/createNewPage.html", {
+            "form": CreateNewPageForm
+        })
+    elif request.method == 'POST':
+        form = CreateNewPageForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['newTitle']
+            content = form.cleaned_data['newContent']
+            if title.lower() in [entry.lower() for entry in util.list_entries()]:
+                messages.add_message(request, messages.WARNING, message=f'Entry "{title}" already exists')
+                return render(request, "encyclopedia/createNewPage.html", {"form": CreateNewPageForm})
+            else:
+                util.save_entry(title, content)
+                return HttpResponseRedirect(f"/page/{title}")
+        else:
+            return render(request, "encyclopedia/createNewPage.html", {"form": CreateNewPageForm})
