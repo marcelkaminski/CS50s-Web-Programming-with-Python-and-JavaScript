@@ -20,7 +20,7 @@ def getEntryPage(request, title):
 
 def getRandomPage(request):
     title = choice(util.list_entries())
-    return HttpResponseRedirect(f"page/{title}")
+    return HttpResponseRedirect(f"/page/{title}")
 
 
 def getSearchResult(query):
