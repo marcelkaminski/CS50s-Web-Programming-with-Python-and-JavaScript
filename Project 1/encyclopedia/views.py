@@ -50,7 +50,7 @@ def getSearchPage(request):
 
 class CreateNewPageForm(forms.Form):
     newTitle = forms.CharField(label="Title")
-    newContent = forms.CharField(label="Content")
+    newContent = forms.CharField(widget=forms.Textarea, label="Content")
 
 
 def createNewPage(request):
@@ -71,3 +71,21 @@ def createNewPage(request):
                 return HttpResponseRedirect(f"/page/{title}")
         else:
             return render(request, "encyclopedia/createNewPage.html", {"form": CreateNewPageForm})
+
+
+class EditPageForm(forms.Form):
+    newContent = forms.CharField(widget=forms.Textarea, label="Content")
+
+
+def editPage(request, title):
+    oldContent = util.get_entry(title)
+    if request.method == 'GET':
+        return render(request, "encyclopedia/editPage.html", {"form": EditPageForm({"newContent": oldContent}), "title":title})
+    elif request.method == 'POST':
+        form = EditPageForm(request.POST)
+        if form.is_valid():
+            newContent = form.cleaned_data['newContent']
+            util.save_entry(title, newContent)
+            return HttpResponseRedirect(f"/page/{title}")
+        else:
+            return render(request, "encyclopedia/editPage.html", {"form": EditPageForm({"content": oldContent}), "title":title})

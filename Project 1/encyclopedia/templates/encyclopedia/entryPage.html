@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+        <a href="{% url 'editPage' title %}">Edit this page</a>
         {% if entry %}
             {{ entry|safe }}
         {% else %}

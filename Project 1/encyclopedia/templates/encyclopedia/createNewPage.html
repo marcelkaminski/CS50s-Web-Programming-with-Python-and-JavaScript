@@ -15,7 +15,7 @@
     {% endif %}
     <form action="{% url 'createNewPage' %}" method="post">
         {% csrf_token %}
-        <table>
+        <table style="width:100%">
             {{ form.as_table }}
         </table>
         <input type="submit" name="submitButton">
