@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import User, Auction, Watchlist
-from .forms import NewAuctionForm
+from .forms import NewAuctionForm, NewBidForm
 
 
 def index(request):
@@ -86,6 +86,7 @@ def add(request):
         else:
             return render(request, "auctions/add.html", {"form": form})
 
+
 @login_required
 def watchlist(request):
     if request.method == "GET":
@@ -104,3 +105,42 @@ def watchlist(request):
         else:
             user.watchlist.filter(auction=auction).delete()
         return HttpResponseRedirect(f"/auction/{auctionID}")
+
+
+def bid(request, auctionID):
+    if request.method == "GET":
+        form = NewBidForm()
+        user = User.objects.get(username=request.user)
+        auction = Auction.objects.get(id=auctionID)
+        if user != auction.owner:
+            notOwner = True
+        else:
+            notOwner = False
+        return render(request, "auctions/bid.html", {
+            "auction": auction,
+            "form": form,
+            "notOwner": notOwner
+        })
+
+    elif request.method == "POST":
+        user = User.objects.get(username=request.user)
+        form = NewBidForm(request.POST)
+        if form.is_valid():
+            bid = form.save(commit=False)
+            auction = Auction.objects.get(id=auctionID)
+            if bid.price > auction.price and user != auction.owner:
+                bid.user = user
+                bid.save()
+                auction.bids.add(bid)
+                auction.price = bid.price
+                auction.save()
+                return HttpResponseRedirect(f"/auction/{auctionID}")
+            else:
+                return HttpResponseRedirect(f"/auction/{auctionID}")
+        else:
+            return HttpResponseRedirect(f"/auction/{auctionID}")
+
+
+
+
+
