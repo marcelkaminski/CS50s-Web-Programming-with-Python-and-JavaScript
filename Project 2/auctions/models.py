@@ -20,6 +20,8 @@ class Auction(models.Model):
     description = models.TextField()
     category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='auctionsByCategory')
     startingBid = models.DecimalField(max_digits=5, decimal_places=2)
+    date = models.DateTimeField(default=timezone.now)
+    imageURL = models.URLField(default="https://user-images.githubusercontent.com/16052233/61581543-f688b100-ab1f-11e9-86b1-023decba19ac.png")
 
     def __str__(self):
         return f"{self.owner}/{self.title}"

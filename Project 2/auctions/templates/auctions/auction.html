@@ -3,12 +3,13 @@
 {% block title %}{{ auction.title }}{% endblock %}
 
 {% block body %}
-    <ul>
-        <li><a href="{% url 'index' %}">{{ auction.owner }}</a></li>
-        <li>{{ auction.title }}</li>
-        <li>{{ auction.description }}</li>
-        <li><a href="{% url 'index' %}">{{ auction.category }}</a></li>
-        <li>{{ auction.startingBid }}</li>
-    </ul>
+
+    <h1>{{ auction.title }}</h1>
+    Add: {{ auction.date }}<br>
+    Owner: <a href="{% url 'index' %}">{{ auction.owner }}</a><br>
+    Category: <a href="{% url 'index' %}">{{ auction.category }}</a><br>
+    <img alt="Image" src={{ auction.imageURL }} width=300 height=300><br>
+    <div>{{ auction.description }}</div><br>
+    <h3>Actual offer: {{ auction.startingBid }}</li></h3>
 
 {% endblock %}
