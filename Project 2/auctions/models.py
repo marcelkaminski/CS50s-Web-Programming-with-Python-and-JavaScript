@@ -23,6 +23,7 @@ class Auction(models.Model):
     bids = models.ManyToManyField('Bid', blank=True, related_name="bids")
     date = models.DateTimeField(default=timezone.now)
     imageURL = models.URLField(default="https://user-images.githubusercontent.com/16052233/61581543-f688b100-ab1f-11e9-86b1-023decba19ac.png")
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.owner}/{self.title}"
@@ -43,3 +44,6 @@ class Bid(models.Model):
 
     def __str__(self):
         return f"{self.user} put a bid in for {self.price}"
+
+    class Meta:
+        get_latest_by = ['date']

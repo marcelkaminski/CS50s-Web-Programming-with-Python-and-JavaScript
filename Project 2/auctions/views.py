@@ -69,18 +69,9 @@ def register(request):
 def auction(request, auctionID):
     auction = Auction.objects.get(id=auctionID)
     form = NewBidForm()
-    try:
-        user = User.objects.get(username=request.user)
-        if user != auction.owner:
-            notOwner = True
-        else:
-            notOwner = False
-    except:
-        notOwner = True
     return render(request, "auctions/auction.html", {
             "auction": auction,
             "form": form,
-            "notOwner": notOwner
         })
 
 
@@ -139,3 +130,12 @@ def bid(request, auctionID):
                 return HttpResponseRedirect(f"/auction/{auctionID}")
         else:
             return HttpResponseRedirect(f"/auction/{auctionID}")
+
+
+@login_required
+def close(request, auctionID):
+    if request.method == "POST":
+        auction = Auction.objects.get(id=auctionID)
+        auction.active = False
+        auction.save()
+        return HttpResponseRedirect(f"/auction/{auctionID}")

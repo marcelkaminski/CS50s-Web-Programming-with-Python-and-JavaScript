@@ -15,12 +15,25 @@
     Category: <a href="{% url 'index' %}">{{ auction.category }}</a><br>
     <img alt="Image" src={{ auction.imageURL }} width=300 height=300><br>
     <div>{{ auction.description }}</div><br>
-    <h3>Actual offer: {{ auction.price }}</li></h3>
-    {% if user.is_authenticated and notOwner %}
-        <form action={% url 'bid' auction.id %} method="POST">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Submit new bid"/>
-        </form>
+    {% if auction.active %}
+        <h3>Actual offer: {{ auction.price }}</h3>
+        {% if user.is_authenticated %}
+            {% if user == auction.owner %}
+                <form action={% url 'close' auction.id %} method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="closeButton">Close auction</button>
+                </form>
+            {% else %}
+                <form action={% url 'bid' auction.id %} method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Submit new bid"/>
+                </form>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <h3>Final offer: {{ auction.price }}</h3>
+        <h3>Winner: {{ auction.bids.latest.user }}</h3>
     {% endif %}
 {% endblock %}
+
