@@ -16,7 +16,11 @@
     <img alt="Image" src={{ auction.imageURL }} width=300 height=300><br>
     <div>{{ auction.description }}</div><br>
     <h3>Actual offer: {{ auction.price }}</li></h3>
-    {% if user.is_authenticated %}
-        <a href="{% url 'bid' auction.id %}">Add new bid</a>
+    {% if user.is_authenticated and notOwner %}
+        <form action={% url 'bid' auction.id %} method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit new bid"/>
+        </form>
     {% endif %}
 {% endblock %}

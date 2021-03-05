@@ -68,7 +68,20 @@ def register(request):
 
 def auction(request, auctionID):
     auction = Auction.objects.get(id=auctionID)
-    return render(request, "auctions/auction.html", {"auction": auction})
+    form = NewBidForm()
+    try:
+        user = User.objects.get(username=request.user)
+        if user != auction.owner:
+            notOwner = True
+        else:
+            notOwner = False
+    except:
+        notOwner = True
+    return render(request, "auctions/auction.html", {
+            "auction": auction,
+            "form": form,
+            "notOwner": notOwner
+        })
 
 
 @login_required
@@ -109,21 +122,7 @@ def watchlist(request):
 
 @login_required
 def bid(request, auctionID):
-    if request.method == "GET":
-        form = NewBidForm()
-        user = User.objects.get(username=request.user)
-        auction = Auction.objects.get(id=auctionID)
-        if user != auction.owner:
-            notOwner = True
-        else:
-            notOwner = False
-        return render(request, "auctions/bid.html", {
-            "auction": auction,
-            "form": form,
-            "notOwner": notOwner
-        })
-
-    elif request.method == "POST":
+    if request.method == "POST":
         user = User.objects.get(username=request.user)
         form = NewBidForm(request.POST)
         if form.is_valid():
