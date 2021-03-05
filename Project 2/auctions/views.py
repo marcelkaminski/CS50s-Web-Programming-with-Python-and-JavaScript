@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Auction
+from .models import User, Auction, Watchlist
 from .forms import NewAuctionForm
 
 
@@ -85,3 +85,22 @@ def add(request):
             return HttpResponseRedirect(f"/auction/{auction.id}")
         else:
             return render(request, "auctions/add.html", {"form": form})
+
+@login_required
+def watchlist(request):
+    if request.method == "GET":
+        user = User.objects.get(username=request.user)
+        auctions = user.watchlist.all()
+        return render(request, "auctions/watchlist.html", {"auctions": auctions})
+    elif request.method == "POST":
+        user = User.objects.get(username=request.user)
+        auctionID = request.POST.get("button")
+        auction = Auction.objects.get(id=auctionID)
+        if not user.watchlist.filter(auction=auction):
+            watchlist = Watchlist()
+            watchlist.user = user
+            watchlist.auction = auction
+            watchlist.save()
+        else:
+            user.watchlist.filter(auction=auction).delete()
+        return HttpResponseRedirect(f"/auction/{auctionID}")

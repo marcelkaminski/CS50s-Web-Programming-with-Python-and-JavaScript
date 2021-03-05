@@ -25,3 +25,11 @@ class Auction(models.Model):
 
     def __str__(self):
         return f"{self.owner}/{self.title}"
+
+
+class Watchlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist")
+    auction = models.ForeignKey(Auction, on_delete=models.CASCADE, related_name="listings")
+
+    def __str__(self):
+        return f"{self.user.username} add {self.auction.title} to watchlist"

@@ -3,7 +3,12 @@
 {% block title %}{{ auction.title }}{% endblock %}
 
 {% block body %}
-
+    {% if user.is_authenticated %}
+        <form action="{% url 'watchlist'%}" method="POST">
+            {% csrf_token %}
+            <button type="submit" name="button" value="{{ auction.id }}" >Watchlist</button>
+        </form>
+    {% endif %}
     <h1>{{ auction.title }}</h1>
     Add: {{ auction.date }}<br>
     Owner: <a href="{% url 'index' %}">{{ auction.owner }}</a><br>
