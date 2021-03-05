@@ -107,6 +107,7 @@ def watchlist(request):
         return HttpResponseRedirect(f"/auction/{auctionID}")
 
 
+@login_required
 def bid(request, auctionID):
     if request.method == "GET":
         form = NewBidForm()
@@ -139,8 +140,3 @@ def bid(request, auctionID):
                 return HttpResponseRedirect(f"/auction/{auctionID}")
         else:
             return HttpResponseRedirect(f"/auction/{auctionID}")
-
-
-
-
-
