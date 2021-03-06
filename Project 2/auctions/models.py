@@ -24,6 +24,7 @@ class Auction(models.Model):
     date = models.DateTimeField(default=timezone.now)
     imageURL = models.URLField(default="https://user-images.githubusercontent.com/16052233/61581543-f688b100-ab1f-11e9-86b1-023decba19ac.png")
     active = models.BooleanField(default=True)
+    comments = models.ManyToManyField('Comment', blank=True, related_name="comments")
 
     def __str__(self):
         return f"{self.owner}/{self.title}"
@@ -47,3 +48,13 @@ class Bid(models.Model):
 
     class Meta:
         get_latest_by = ['date']
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="userComments")
+    title = models.CharField(max_length=32, default="")
+    comment = models.TextField(max_length=255)
+    time = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user}: {self.comment}"

@@ -24,16 +24,40 @@
                     <button type="submit" name="closeButton">Close auction</button>
                 </form>
             {% else %}
+                <div>
                 <form action={% url 'bid' auction.id %} method="POST">
                     {% csrf_token %}
                     {{ form }}
                     <input type="submit" value="Submit new bid"/>
                 </form>
+                </div>
             {% endif %}
         {% endif %}
     {% else %}
-        <h3>Final offer: {{ auction.price }}</h3>
+        <h3>Final offer: {{ auction.bids.latest.price }}</h3>
         <h3>Winner: {{ auction.bids.latest.user }}</h3>
+    {% endif %}
+    {% if user.is_authenticated %}
+        <div>
+            <h1>Add comment:</h1>
+            <form action={% url 'comment' auction.id %} method="POST">
+                {% csrf_token %}
+                <table>
+                {{ commentForm.as_table }}
+                </table>
+                <input type="submit" value="Add new comment"/>
+            </form>
+        </div>
+        {% if auction.comments.all %}
+            <h1>Comments:</h1>
+            {% for comment in auction.comments.all %}
+                <div>
+                    {{ comment.user }} {{ comment.time }}<br>
+                    <strong>{{ comment.title }}</strong><br>
+                    {{ comment.comment }}
+                </div><br>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 {% endblock %}
 

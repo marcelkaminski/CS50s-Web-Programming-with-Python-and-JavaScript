@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import User, Auction, Watchlist
-from .forms import NewAuctionForm, NewBidForm
+from .forms import NewAuctionForm, NewBidForm, NewCommentForm
 
 
 def index(request):
@@ -69,9 +69,11 @@ def register(request):
 def auction(request, auctionID):
     auction = Auction.objects.get(id=auctionID)
     form = NewBidForm()
+    commentForm = NewCommentForm()
     return render(request, "auctions/auction.html", {
             "auction": auction,
             "form": form,
+            "commentForm": commentForm
         })
 
 
@@ -138,4 +140,20 @@ def close(request, auctionID):
         auction = Auction.objects.get(id=auctionID)
         auction.active = False
         auction.save()
+        return HttpResponseRedirect(f"/auction/{auctionID}")
+
+
+@login_required
+def comment(request, auctionID):
+    if request.method == "POST":
+        form = NewCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            user = User.objects.get(username=request.user)
+            comment.user = user
+            comment.save()
+            auction = Auction.objects.get(id=auctionID)
+            auction.comments.add(comment)
+            auction.save()
+            return HttpResponseRedirect(f"/auction/{auctionID}")
         return HttpResponseRedirect(f"/auction/{auctionID}")
