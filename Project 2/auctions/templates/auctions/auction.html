@@ -11,8 +11,8 @@
     {% endif %}
     <h1>{{ auction.title }}</h1>
     Add: {{ auction.date }}<br>
-    Owner: <a href="{% url 'index' %}">{{ auction.owner }}</a><br>
-    Category: <a href="{% url 'index' %}">{{ auction.category }}</a><br>
+    Owner: <a href="{% url 'userAuction' auction.owner %}">{{ auction.owner }}</a><br>
+    Category: <a href="{% url 'categoryAuction' auction.category %}">{{ auction.category }}</a><br>
     <img alt="Image" src={{ auction.imageURL }} width=300 height=300><br>
     <div>{{ auction.description }}</div><br>
     {% if auction.active %}

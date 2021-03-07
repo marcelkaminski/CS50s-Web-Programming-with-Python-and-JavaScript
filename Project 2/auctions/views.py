@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -157,3 +157,26 @@ def comment(request, auctionID):
             auction.save()
             return HttpResponseRedirect(f"/auction/{auctionID}")
         return HttpResponseRedirect(f"/auction/{auctionID}")
+
+
+def userAuction(request, name):
+    try:
+        user = User.objects.get(username=name)
+        auctions = user.auctionsByUser
+        return render(request, "auctions/auctionsBy.html", {
+            "auctions": auctions,
+            "name": name
+        })
+    except:
+        return HttpResponseNotFound('<h1>User not found</h1>')
+
+
+def categoryAuction(request, name):
+    if name in (item for sublist in Auction.CATEGORIES for item in sublist):
+        auctions = Auction.objects.filter(category=name)
+        return render(request, "auctions/auctionsBy.html", {
+            "auctions": auctions,
+            "name": name
+        })
+    else:
+        return HttpResponseNotFound('<h1>Category not found</h1>')

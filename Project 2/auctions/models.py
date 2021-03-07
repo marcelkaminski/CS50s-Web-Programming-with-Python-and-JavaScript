@@ -7,24 +7,23 @@ class User(AbstractUser):
     pass
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=64)
-
-    def __str__(self):
-        return f"{self.name}"
-
-
 class Auction(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE, related_name='auctionsByUser')
     title = models.CharField(max_length=64)
     description = models.TextField()
-    category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='auctionsByCategory')
     price = models.DecimalField(max_digits=5, decimal_places=2)
     bids = models.ManyToManyField('Bid', blank=True, related_name="bids")
     date = models.DateTimeField(default=timezone.now)
     imageURL = models.URLField(default="https://user-images.githubusercontent.com/16052233/61581543-f688b100-ab1f-11e9-86b1-023decba19ac.png")
     active = models.BooleanField(default=True)
     comments = models.ManyToManyField('Comment', blank=True, related_name="comments")
+    CATEGORIES = [
+        ('Books', 'Books'),
+        ('Clothes', 'Clothes'),
+        ('Toys', 'Toys'),
+        ('Electronics', 'Electronics')
+    ]
+    category = models.CharField(max_length=32, choices=CATEGORIES, blank=True, null=True)
 
     def __str__(self):
         return f"{self.owner}/{self.title}"
