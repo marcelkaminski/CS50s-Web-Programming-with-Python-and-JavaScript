@@ -32,7 +32,21 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
-  
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+      // Print emails
+      console.log(emails);
+
+      emails.forEach(mail => {
+          const element = document.createElement('mail-container');
+          element.innerHTML = `${JSON.stringify(mail)}<br>`;
+          //element.addEventListener('click', function() {
+          //    console.log('This element has been clicked!')
+          //});
+          document.querySelector('#emails-view').append(element);
+      });
+  });
 }
 
 function send_email(event) {
