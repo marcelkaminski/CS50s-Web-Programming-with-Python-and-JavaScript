@@ -39,8 +39,8 @@ function load_mailbox(mailbox) {
       console.log(emails);
 
       emails.forEach(mail => {
-          const element = document.createElement('mail-container');
-          element.innerHTML = `${JSON.stringify(mail)}<br>`;
+          const element = document.createElement('div');
+          element.innerHTML = `${JSON.stringify(mail)}`;
           //element.addEventListener('click', function() {
           //    console.log('This element has been clicked!')
           //});
