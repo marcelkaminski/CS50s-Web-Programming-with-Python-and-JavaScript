@@ -41,12 +41,13 @@ function load_mailbox(mailbox) {
       } else {
         sender_recipients = element.recipients;
       }
-      if (mailbox == "inbox") {
-        if (element.read) is_read = "read";
-        else is_read = "";
-      } else is_read = "";
+      console.log(element);
+      let is_read = "bg-primary";
+      if (element.read) {
+        is_read = "bg-white";
+      }
       var item = document.createElement("div");
-      item.className = `card   ${is_read} my-1 items`;
+      item.className = `card ${is_read} mb-3`;
       item.innerHTML = `<div class="card-body" id="item-${element.id}">
           ${element.subject} | ${sender_recipients} | ${element.timestamp}
           <br>
@@ -113,7 +114,7 @@ function show_mail(id, mailbox) {
         reply_mail(email.sender, email.subject, email.body, email.timestamp);
       });
       document.querySelector("#emails-view").appendChild(reply);
-      make_read(id);
+      read_mail(id);
     });
 }
 
@@ -134,3 +135,13 @@ function archive_mail(id, email_archived) {
     })
   }
 }
+
+function read_mail(id) {
+  fetch(`/emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: true
+    })
+  })
+}
+
