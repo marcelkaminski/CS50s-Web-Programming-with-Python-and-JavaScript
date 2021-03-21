@@ -122,14 +122,14 @@ function archive_mail(id, email_archived) {
     fetch(`/emails/${id}`, {
       method: 'PUT',
       body: JSON.stringify({
-        archived: true
+        archived: false
       })
     })
   }else {
     fetch(`/emails/${id}`, {
       method: 'PUT',
       body: JSON.stringify({
-        archived: false
+        archived: true
       })
     })
   }
