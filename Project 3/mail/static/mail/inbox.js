@@ -98,7 +98,7 @@ function show_mail(id, mailbox) {
       let archive = document.createElement("btn");
       archive.className = `btn btn-outline-info my-2`;
       archive.addEventListener("click", () => {
-        toggle_archive(id, email.archived);
+        archive_mail(id, email.archived);
         if (archive.innerText == "Archive") archive.innerText = "Unarchive";
         else archive.innerText = "Archive";
       });
@@ -115,4 +115,22 @@ function show_mail(id, mailbox) {
       document.querySelector("#emails-view").appendChild(reply);
       make_read(id);
     });
+}
+
+function archive_mail(id, email_archived) {
+  if (email_archived) {
+    fetch(`/emails/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: true
+      })
+    })
+  }else {
+    fetch(`/emails/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: false
+      })
+    })
+  }
 }
