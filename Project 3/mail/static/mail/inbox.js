@@ -41,7 +41,6 @@ function load_mailbox(mailbox) {
       } else {
         sender_recipients = element.recipients;
       }
-      console.log(element);
       let is_read = "bg-primary";
       if (element.read) {
         is_read = "bg-white";
@@ -145,3 +144,13 @@ function read_mail(id) {
   })
 }
 
+function reply_mail(sender, subject, body, timestamp) {
+  compose_email();
+  if (!/^Re:/.test(subject)) subject = `Re: ${subject}`;
+  document.querySelector("#compose-recipients").value = sender;
+  document.querySelector("#compose-subject").value = subject;
+
+  pre_fill = `On ${timestamp} ${sender} wrote:\n${body}\n`;
+
+  document.querySelector("#compose-body").value = pre_fill;
+}
